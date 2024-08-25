@@ -45,13 +45,13 @@ jobs:
       run: docker build -t my-accounts-service .
 
     - name: Run Docker container
-      run: docker run -d -p 5000:8080 --name accounts-service my-accounts-service
+      run: docker run -d -p 5001:8080 --name accounts-container my-accounts-service
 
     - name: Test the running container
       run: |
-        curl --retry 5 --retry-delay 10 --retry-connrefused http://localhost:5000/api/ping
+        curl --retry 5 --retry-delay 10 --retry-connrefused http://localhost:8080/api/ping
 
     - name: Stop and remove Docker container
       run: |
-        docker stop accounts-service
-        docker rm accounts-service
+        docker stop accounts-container
+        docker rm accounts-container
