@@ -46,10 +46,13 @@ jobs:
 
     - name: Run Docker container
       run: docker run -d -p 5001:8080 --name accounts-container my-accounts-service
-
+      
+    - name: View Docker logs
+      run: docker logs microservice-container
+      
     - name: Test the running container
       run: |
-        curl --retry 2 --retry-delay 10 --retry-connrefused http://localhost:5001/api/ping
+        curl --retry 2 --retry-delay 10 --retry-connrefused http://localhost:8080/api/ping
 
     - name: Stop and remove Docker container
       run: |
