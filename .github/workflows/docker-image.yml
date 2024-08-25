@@ -49,7 +49,7 @@ jobs:
 
     - name: Test the running container
       run: |
-        curl --retry 5 --retry-delay 10 --retry-connrefused http://localhost:8080/api/ping
+        curl --retry 2 --retry-delay 10 --retry-connrefused http://localhost:5001/api/ping
 
     - name: Stop and remove Docker container
       run: |
