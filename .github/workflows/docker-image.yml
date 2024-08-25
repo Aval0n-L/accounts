@@ -48,7 +48,7 @@ jobs:
       run: docker run -d -p 5001:8080 --name accounts-container my-accounts-service
       
     - name: View Docker logs
-      run: docker logs microservice-container
+      run: docker logs accounts-container
       
     - name: Test the running container
       run: |
