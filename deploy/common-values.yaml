@@ -1,0 +1,17 @@
+name: accounts
+
+settings: {
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    },
+    "Console": {
+      "Enabled": false
+    },
+    "Stdout": {
+      "Enabled": true
+    }
+  }
+}
