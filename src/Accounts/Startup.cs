@@ -1,4 +1,12 @@
 ﻿using System.Globalization;
+using System.Text;
+using Accounts.Configuration;
+using Accounts.Services;
+using Accounts.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Accounts;
 
@@ -6,9 +14,35 @@ public class Startup(IConfiguration configuration)
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        // services.AddCors(); 
+        //services.AddCors();
+
+        services.Configure<JwtSettingsOptions>(configuration.GetSection("JwtSettings"));
+
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettingsOptions>();
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+                };
+            });
 
         services.AddHealthChecks();
+
+        services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddSingleton<IValidationParametersProvider, ValidationParametersProvider>();
 
         services
             .AddControllers()
@@ -20,14 +54,12 @@ public class Startup(IConfiguration configuration)
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        //configure CORS if you have public endpoints;
-        // app.UseCors(p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().SetPreflightMaxAge(TimeSpan.FromDays(1)));
+        //app.UseCors(p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().SetPreflightMaxAge(TimeSpan.FromDays(1)));
 
         app.UseRouting();
 
-        // these lines only if you have authentication and authorization set up
-        // app.UseAuthentication();
-        // app.UseAuthorization();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.UseSwagger();
         app.UseSwaggerUI();
