@@ -35,7 +35,7 @@ public class AuthenticateController : Controller
         try
         {
             var jwtToken = Request.Headers.GetJwtToken();
-            var tenantToken = Request.Headers.GetEwbTenant();
+            var tenantToken = Request.Headers.GetTenant();
 
             if (!string.IsNullOrEmpty(jwtToken))
             {

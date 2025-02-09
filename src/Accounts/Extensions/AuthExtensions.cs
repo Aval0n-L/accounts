@@ -12,7 +12,7 @@ public static class AuthExtensions
         return !string.IsNullOrEmpty(str) && str.StartsWith("Bearer", StringComparison.InvariantCulture) ? str.Remove(0, "Bearer".Length).TrimStart() : null;
     }
 
-    public static string? GetEwbTenant(this IHeaderDictionary headers)
+    public static string? GetTenant(this IHeaderDictionary headers)
     {
         return headers["Tenant-Token"];
     }
